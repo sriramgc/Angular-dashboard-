@@ -1,0 +1,48 @@
+<div class="card {{color}} transition-all duration-200 hover:shadow-md h-full flex flex-col"
+     [ngClass]="{'ring-2 ring-primary/20': isEditing}">
+  <div class="card-header flex flex-row items-center justify-between pb-2">
+    <div class="flex items-center gap-2">
+      <div *ngIf="isEditing" class="cursor-move text-primary mr-2">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-grip-vertical">
+          <circle cx="9" cy="12" r="1"/><circle cx="9" cy="5" r="1"/><circle cx="9" cy="19" r="1"/>
+          <circle cx="15" cy="12" r="1"/><circle cx="15" cy="5" r="1"/><circle cx="15" cy="19" r="1"/>
+        </svg>
+      </div>
+      <h3 class="card-title text-lg font-medium truncate">{{title}}</h3>
+    </div>
+    <div class="flex items-center gap-2">
+      <button *ngIf="isEditing" class="btn btn-ghost h-7 w-7" (click)="decreaseSize.emit()" [disabled]="!canDecrease">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-minimize-2">
+          <polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/>
+          <line x1="14" y1="10" x2="21" y2="3"/><line x1="3" y1="21" x2="10" y2="14"/>
+        </svg>
+        <span class="sr-only">Decrease size</span>
+      </button>
+      <button *ngIf="isEditing" class="btn btn-ghost h-7 w-7" (click)="increaseSize.emit()" [disabled]="!canIncrease">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-maximize-2">
+          <polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/>
+          <line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/>
+        </svg>
+        <span class="sr-only">Increase size</span>
+      </button>
+      <button *ngIf="isEditing" class="btn btn-ghost h-7 w-7 text-destructive hover:text-destructive" (click)="remove.emit()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2">
+          <path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
+          <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/>
+          <line x1="14" y1="11" x2="14" y2="17"/>
+        </svg>
+        <span class="sr-only">Remove card</span>
+      </button>
+    </div>
+  </div>
+  <div class="card-content flex-1 flex flex-col">
+    <p class="mb-4">{{content}}</p>
+    <div class="mt-auto h-24 flex items-center justify-center rounded-md bg-background/50">
+      <!-- Placeholder for card content -->
+      <span class="text-sm text-muted-foreground">
+        <ng-container *ngIf="isEditing">{{size}} column{{size > 1 ? 's' : ''}}</ng-container>
+        <ng-container *ngIf="!isEditing">Card Content</ng-container>
+      </span>
+    </div>
+  </div>
+</div>

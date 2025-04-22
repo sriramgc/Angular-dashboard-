@@ -1,0 +1,98 @@
+<div class="space-y-4">
+  <div class="flex justify-between items-center">
+    <div class="flex gap-2">
+      <button class="btn btn-outline btn-sm flex items-center gap-2" (click)="dashboardService.toggleEditMode()">
+        <ng-container *ngIf="editMode">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-save">
+            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+            <polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/>
+          </svg>
+          Save Layout
+        </ng-container>
+        <ng-container *ngIf="!editMode">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus-circle">
+            <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/>
+          </svg>
+          Edit Layout
+        </ng-container>
+      </button>
+
+      <button *ngIf="editMode" class="btn btn-outline btn-sm flex items-center gap-2" (click)="dashboardService.addCard()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus-circle">
+          <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/>
+        </svg>
+        Add Card
+      </button>
+    </div>
+
+    <div *ngIf="editMode" class="text-sm text-muted-foreground">
+      Drag cards between rows to reorganize your dashboard
+    </div>
+  </div>
+
+  <div class="space-y-4">
+    <div *ngFor="let row of rows" 
+         class="grid grid-cols-12 gap-4 min-h-[100px]"
+         [ngClass]="{'bg-primary/5 ring-2 ring-primary/20 rounded-lg': dragOverRow === row.rowId}"
+         (dragover)="onDragOver($event, row.rowId)"
+         (drop)="onDrop($event, row.rowId)">
+      
+      <div *ngFor="let card of row.cards"
+           [ngStyle]="getCardStyle(card)"
+           [attr.draggable]="editMode"
+           (dragstart)="onDragStart($event, card.id)"
+           (dragend)="onDragEnd()"
+           [ngClass]="{
+             'transition-all duration-200 hover:ring-2 hover:ring-primary/30 cursor-move': editMode,
+             'opacity-50': draggedCard === card.id
+           }"
+           class="h-full">
+        
+        <app-dashboard-card
+          [title]="card.title"
+          [content]="card.content"
+          [color]="card.color"
+          [isEditing]="editMode"
+          [size]="card.gridColumn"
+          [canIncrease]="canIncreaseCardSize(card)"
+          [canDecrease]="card.gridColumn > 1"
+          (increaseSize)="dashboardService.resizeCard(card.id, true)"
+          (decreaseSize)="dashboardService.resizeCard(card.id, false)"
+          (remove)="dashboardService.removeCard(card.id)">
+        </app-dashboard-card>
+      </div>
+    </div>
+
+    <!-- Empty row for dropping cards -->
+    <div *ngIf="editMode"
+         class="min-h-[100px] border-2 border-dashed border-muted rounded-lg p-4 flex items-center justify-center"
+         [ngClass]="{'bg-primary/5 border-primary/40': dragOverRow === createNewRow()}"
+         (dragover)="onDragOver($event, createNewRow())"
+         (drop)="onDrop($event, createNewRow())">
+      <div class="text-center text-muted-foreground">
+        {{ dragOverRow === createNewRow() ? 'Drop to create a new row' : 'Drag cards here to create a new row' }}
+      </div>
+    </div>
+
+    <!-- Row selection for moving cards (alternative to drag and drop) -->
+    <div *ngIf="editMode && rows.length > 0" class="mt-8 p-4 border rounded-lg bg-muted/20">
+      <h3 class="font-medium mb-4">Move Cards Between Rows</h3>
+      <div class="space-y-4">
+        <div *ngFor="let card of cards" class="flex items-center gap-4">
+          <div class="font-medium w-1/4 truncate">{{ card.title }}</div>
+          <div class="flex-1">
+            <select 
+              class="w-full p-2 rounded-md border"
+              [ngModel]="card.rowId"
+              (ngModelChange)="dashboardService.moveCard(card.id, $event)">
+              <option *ngFor="let row of rows" [value]="row.rowId">
+                Row {{ row.rowId }}
+              </option>
+              <option [value]="createNewRow()">New Row</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

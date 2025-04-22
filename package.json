@@ -57,7 +57,15 @@
     "tailwind-merge": "^2.5.5",
     "tailwindcss-animate": "^1.0.7",
     "vaul": "^0.9.6",
-    "zod": "^3.24.1"
+    "zod": "^3.24.1",
+    "rxjs": "latest",
+    "zone.js": "latest",
+    "@angular/core": "latest",
+    "@angular/common": "latest",
+    "@angular/platform-browser": "latest",
+    "@angular/animations": "latest",
+    "@angular/cdk": "latest",
+    "@angular/forms": "latest"
   },
   "devDependencies": {
     "@types/node": "^22",
