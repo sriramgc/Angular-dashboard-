@@ -1,5 +1,6 @@
-<div class="card {{color}} transition-all duration-200 hover:shadow-md h-full flex flex-col"
-     [ngClass]="{'ring-2 ring-primary/20': isEditing}">
+<div #cardElement class="card {{color}} transition-all duration-200 hover:shadow-md h-full flex flex-col"
+     [ngClass]="{'ring-2 ring-primary/20': isEditing}"
+     [style.height.px]="height">
   <div class="card-header flex flex-row items-center justify-between pb-2">
     <div class="flex items-center gap-2">
       <div *ngIf="isEditing" class="cursor-move text-primary mr-2">
@@ -37,7 +38,7 @@
   </div>
   <div class="card-content flex-1 flex flex-col">
     <p class="mb-4">{{content}}</p>
-    <div class="mt-auto h-24 flex items-center justify-center rounded-md bg-background/50">
+    <div class="mt-auto flex-1 flex items-center justify-center rounded-md bg-background/50">
       <!-- Placeholder for card content -->
       <span class="text-sm text-muted-foreground">
         <ng-container *ngIf="isEditing">{{size}} column{{size > 1 ? 's' : ''}}</ng-container>
@@ -45,4 +46,14 @@
       </span>
     </div>
   </div>
+  
+  <!-- Resize handles (only visible in edit mode) -->
+  <div *ngIf="isEditing" class="resize-handle resize-e" (mousedown)="onResizeStart($event, 'e')"></div>
+  <div *ngIf="isEditing" class="resize-handle resize-s" (mousedown)="onResizeStart($event, 's')"></div>
+  <div *ngIf="isEditing" class="resize-handle resize-se" (mousedown)="onResizeStart($event, 'se')"></div>
+  <div *ngIf="isEditing" class="resize-handle resize-w" (mousedown)="onResizeStart($event, 'w')"></div>
+  <div *ngIf="isEditing" class="resize-handle resize-n" (mousedown)="onResizeStart($event, 'n')"></div>
+  <div *ngIf="isEditing" class="resize-handle resize-ne" (mousedown)="onResizeStart($event, 'ne')"></div>
+  <div *ngIf="isEditing" class="resize-handle resize-sw" (mousedown)="onResizeStart($event, 'sw')"></div>
+  <div *ngIf="isEditing" class="resize-handle resize-nw" (mousedown)="onResizeStart($event, 'nw')"></div>
 </div>

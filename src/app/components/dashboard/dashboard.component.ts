@@ -1,4 +1,12 @@
-import { Component, type OnInit, type OnDestroy } from "@angular/core"
+import {
+  Component,
+  type OnInit,
+  type OnDestroy,
+  type ElementRef,
+  ViewChild,
+  type AfterViewInit,
+  HostListener,
+} from "@angular/core"
 import { CommonModule } from "@angular/common"
 import { DragDropModule } from "@angular/cdk/drag-drop"
 import { FormsModule } from "@angular/forms"
@@ -15,12 +23,15 @@ import type { DashboardCardData, DashboardRow } from "../../models/dashboard.mod
   templateUrl: "./dashboard.component.html",
   styleUrls: ["./dashboard.component.css"],
 })
-export class DashboardComponent implements OnInit, OnDestroy {
+export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   cards: DashboardCardData[] = []
   rows: DashboardRow[] = []
   editMode = false
   draggedCard: string | null = null
   dragOverRow: number | null = null
+  containerWidth = 1200 // Default container width
+
+  @ViewChild("dashboardContainer") dashboardContainer!: ElementRef
 
   private subscriptions: Subscription[] = []
 
@@ -38,8 +49,25 @@ export class DashboardComponent implements OnInit, OnDestroy {
     )
   }
 
+  ngAfterViewInit(): void {
+    // Get the actual container width
+    this.updateContainerWidth()
+  }
+
   ngOnDestroy(): void {
     this.subscriptions.forEach((sub) => sub.unsubscribe())
+  }
+
+  // Update container width when window is resized
+  @HostListener("window:resize")
+  onResize(): void {
+    this.updateContainerWidth()
+  }
+
+  updateContainerWidth(): void {
+    if (this.dashboardContainer && this.dashboardContainer.nativeElement) {
+      this.containerWidth = this.dashboardContainer.nativeElement.offsetWidth
+    }
   }
 
   onDragStart(event: DragEvent, cardId: string): void {
@@ -95,6 +123,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   getCardStyle(card: DashboardCardData): any {
     return {
       "grid-column": `span ${card.gridColumn}`,
+      height: card.height ? `${card.height}px` : "auto",
     }
   }
 
@@ -106,5 +135,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   createNewRow(): number {
     return this.dashboardService.createNewRow()
+  }
+
+  onCardResize(cardId: string, dimensions: { width: number; height: number }): void {
+    this.dashboardService.resizeCardByDrag(cardId, dimensions)
   }
 }

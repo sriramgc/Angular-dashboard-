@@ -62,8 +62,8 @@
     "zone.js": "latest",
     "@angular/core": "latest",
     "@angular/common": "latest",
-    "@angular/platform-browser": "latest",
     "@angular/animations": "latest",
+    "@angular/platform-browser": "latest",
     "@angular/cdk": "latest",
     "@angular/forms": "latest"
   },

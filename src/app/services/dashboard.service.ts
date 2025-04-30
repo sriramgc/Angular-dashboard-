@@ -20,6 +20,7 @@ export class DashboardService {
       color: "bg-blue-50 dark:bg-blue-950",
       gridColumn: 6, // Half of the 12-column grid
       rowId: 1,
+      height: 200, // Default height in pixels
     },
     {
       id: "card-2",
@@ -28,6 +29,7 @@ export class DashboardService {
       color: "bg-green-50 dark:bg-green-950",
       gridColumn: 6,
       rowId: 1,
+      height: 200,
     },
     {
       id: "card-3",
@@ -36,6 +38,7 @@ export class DashboardService {
       color: "bg-purple-50 dark:bg-purple-950",
       gridColumn: 4,
       rowId: 2,
+      height: 200,
     },
     {
       id: "card-4",
@@ -44,6 +47,7 @@ export class DashboardService {
       color: "bg-amber-50 dark:bg-amber-950",
       gridColumn: 4,
       rowId: 2,
+      height: 200,
     },
     {
       id: "card-5",
@@ -52,6 +56,7 @@ export class DashboardService {
       color: "bg-rose-50 dark:bg-rose-950",
       gridColumn: 4,
       rowId: 2,
+      height: 200,
     },
     {
       id: "card-6",
@@ -60,6 +65,7 @@ export class DashboardService {
       color: "bg-cyan-50 dark:bg-cyan-950",
       gridColumn: 12, // Full width
       rowId: 3,
+      height: 200,
     },
   ]
 
@@ -122,6 +128,7 @@ export class DashboardService {
       color: "bg-slate-50 dark:bg-slate-950",
       gridColumn: 4, // Default to 1/3 of the grid
       rowId: highestRowId + 1, // Add to a new row
+      height: 200, // Default height
     }
 
     this.cardsSubject.next([...cards, newCard])
@@ -212,6 +219,33 @@ export class DashboardService {
 
     this.cardsSubject.next(cards)
     this.saveLayout()
+  }
+
+  // Enhanced method to handle proportional drag-resize
+  resizeCardByDrag(cardId: string, dimensions: { width: number; height: number }): void {
+    const cards = this.cardsSubject.value.map((card) => {
+      if (card.id === cardId) {
+        // Find all cards in the same row
+        const cardsInSameRow = this.cardsSubject.value.filter((c) => c.rowId === card.rowId && c.id !== cardId)
+        const totalOtherColumns = cardsInSameRow.reduce((sum, c) => sum + c.gridColumn, 0)
+
+        // Calculate available space
+        const availableSpace = 12 - totalOtherColumns
+
+        // Ensure width is within bounds
+        const newWidth = Math.max(1, Math.min(dimensions.width, availableSpace))
+
+        return {
+          ...card,
+          gridColumn: newWidth,
+          height: dimensions.height,
+        }
+      }
+      return card
+    })
+
+    this.cardsSubject.next(cards)
+    // We'll save when edit mode is toggled off to avoid performance issues
   }
 
   createNewRow(): number {

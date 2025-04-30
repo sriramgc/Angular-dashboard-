@@ -26,11 +26,11 @@
     </div>
 
     <div *ngIf="editMode" class="text-sm text-muted-foreground">
-      Drag cards between rows to reorganize your dashboard
+      Drag cards between rows or resize by dragging card borders
     </div>
   </div>
 
-  <div class="space-y-4">
+  <div #dashboardContainer class="space-y-4">
     <div *ngFor="let row of rows" 
          class="grid grid-cols-12 gap-4 min-h-[100px]"
          [ngClass]="{'bg-primary/5 ring-2 ring-primary/20 rounded-lg': dragOverRow === row.rowId}"
@@ -54,11 +54,15 @@
           [color]="card.color"
           [isEditing]="editMode"
           [size]="card.gridColumn"
+          [height]="card.height"
+          [rowId]="card.rowId"
+          [containerWidth]="containerWidth"
           [canIncrease]="canIncreaseCardSize(card)"
           [canDecrease]="card.gridColumn > 1"
           (increaseSize)="dashboardService.resizeCard(card.id, true)"
           (decreaseSize)="dashboardService.resizeCard(card.id, false)"
-          (remove)="dashboardService.removeCard(card.id)">
+          (remove)="dashboardService.removeCard(card.id)"
+          (resize)="onCardResize(card.id, $event)">
         </app-dashboard-card>
       </div>
     </div>
