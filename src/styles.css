@@ -1,0 +1,600 @@
+/* Base styles */
+:root {
+  --background: 0 0% 100%;
+  --foreground: 222.2 84% 4.9%;
+  --card: 0 0% 100%;
+  --card-foreground: 222.2 84% 4.9%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 222.2 84% 4.9%;
+  --primary: 222.2 47.4% 11.2%;
+  --primary-rgb: 28, 30, 39; /* Add RGB values for use with rgba */
+  --primary-foreground: 210 40% 98%;
+  --secondary: 210 40% 96.1%;
+  --secondary-foreground: 222.2 47.4% 11.2%;
+  --muted: 210 40% 96.1%;
+  --muted-foreground: 215.4 16.3% 46.9%;
+  --accent: 210 40% 96.1%;
+  --accent-foreground: 222.2 47.4% 11.2%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 214.3 31.8% 91.4%;
+  --input: 214.3 31.8% 91.4%;
+  --ring: 222.2 84% 4.9%;
+  --radius: 0.5rem;
+  --sidebar-background: 0 0% 98%;
+  --sidebar-foreground: 240 5.3% 26.1%;
+  --sidebar-primary: 240 5.9% 10%;
+  --sidebar-primary-foreground: 0 0% 98%;
+  --sidebar-accent: 240 4.8% 95.9%;
+  --sidebar-accent-foreground: 240 5.9% 10%;
+  --sidebar-border: 220 13% 91%;
+  --sidebar-ring: 217.2 91.2% 59.8%;
+}
+
+.dark {
+  --background: 222.2 84% 4.9%;
+  --foreground: 210 40% 98%;
+  --card: 222.2 84% 4.9%;
+  --card-foreground: 210 40% 98%;
+  --popover: 222.2 84% 4.9%;
+  --popover-foreground: 210 40% 98%;
+  --primary: 210 40% 98%;
+  --primary-rgb: 249, 250, 251; /* Add RGB values for use with rgba */
+  --primary-foreground: 222.2 47.4% 11.2%;
+  --secondary: 217.2 32.6% 17.5%;
+  --secondary-foreground: 210 40% 98%;
+  --muted: 217.2 32.6% 17.5%;
+  --muted-foreground: 215 20.2% 65.1%;
+  --accent: 217.2 32.6% 17.5%;
+  --accent-foreground: 210 40% 98%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 217.2 32.6% 17.5%;
+  --input: 217.2 32.6% 17.5%;
+  --ring: 212.7 26.8% 83.9%;
+  --sidebar-background: 240 5.9% 10%;
+  --sidebar-foreground: 240 4.8% 95.9%;
+  --sidebar-primary: 224.3 76.3% 48%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 240 3.7% 15.9%;
+  --sidebar-accent-foreground: 240 4.8% 95.9%;
+  --sidebar-border: 240 3.7% 15.9%;
+  --sidebar-ring: 217.2 91.2% 59.8%;
+}
+
+/* General Dashboard Styles */
+.dashboard {
+  width: 100%;
+  padding: 1.5rem;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.dashboard-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.dashboard-controls {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Card Styles */
+.card {
+  border-radius: var(--radius);
+  border: 1px solid hsl(var(--border));
+  background-color: hsl(var(--card));
+  color: hsl(var(--card-foreground));
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+}
+
+.card-header {
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem 1.5rem 0;
+}
+
+.card-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.025em;
+}
+
+.card-description {
+  font-size: 0.875rem;
+  color: hsl(var(--muted-foreground));
+}
+
+.card-content {
+  padding: 1.5rem;
+}
+
+.card-footer {
+  display: flex;
+  align-items: center;
+  padding: 0 1.5rem 1.5rem;
+}
+
+/* Card Types */
+/* Stat Card */
+.stat-card .stat-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.stat-card .stat-description {
+  font-size: 0.75rem;
+  color: hsl(var(--muted-foreground));
+  margin-top: 0.25rem;
+}
+
+.stat-card .stat-trend {
+  font-size: 0.75rem;
+  font-weight: 500;
+  margin-top: 0.5rem;
+}
+
+.stat-card .stat-trend.positive {
+  color: #10b981;
+}
+
+.stat-card .stat-trend.negative {
+  color: #ef4444;
+}
+
+/* Notes Card */
+.notes-card textarea {
+  min-height: 120px;
+  width: 100%;
+  border: 1px solid hsl(var(--input));
+  background-color: hsl(var(--background));
+  padding: 0.75rem;
+  border-radius: var(--radius);
+  font-size: 0.875rem;
+  resize: none;
+}
+
+/* Todo Card */
+.todo-card .todo-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.todo-card .todo-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.todo-card .todo-checkbox {
+  width: 1rem;
+  height: 1rem;
+  border: 1px solid hsl(var(--border));
+  border-radius: 0.25rem;
+}
+
+.todo-card .todo-input-group {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.todo-card input {
+  flex: 1;
+  padding: 0.5rem;
+  border: 1px solid hsl(var(--input));
+  border-radius: var(--radius);
+}
+
+.todo-card .todo-completed {
+  text-decoration: line-through;
+  color: hsl(var(--muted-foreground));
+}
+
+/* Chart Card */
+.chart-card .chart-container {
+  width: 100%;
+  height: 200px;
+}
+
+/* Button Styles */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  white-space: nowrap;
+  border-radius: var(--radius);
+  font-size: 0.875rem;
+  font-weight: 500;
+  height: 2.5rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+.btn:focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+}
+
+.btn:disabled {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.btn-primary {
+  background-color: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+}
+
+.btn-primary:hover {
+  background-color: hsl(var(--primary) / 0.9);
+}
+
+.btn-secondary {
+  background-color: hsl(var(--secondary));
+  color: hsl(var(--secondary-foreground));
+}
+
+.btn-secondary:hover {
+  background-color: hsl(var(--secondary) / 0.8);
+}
+
+.btn-outline {
+  border: 1px solid hsl(var(--border));
+  background-color: transparent;
+}
+
+.btn-outline:hover {
+  background-color: hsl(var(--accent));
+  color: hsl(var(--accent-foreground));
+}
+
+.btn-destructive {
+  background-color: hsl(var(--destructive));
+  color: hsl(var(--destructive-foreground));
+}
+
+.btn-destructive:hover {
+  background-color: hsl(var(--destructive) / 0.9);
+}
+
+.btn-ghost {
+  background-color: transparent;
+}
+
+.btn-ghost:hover {
+  background-color: hsl(var(--accent));
+  color: hsl(var(--accent-foreground));
+}
+
+.btn-link {
+  color: hsl(var(--primary));
+  text-decoration-line: underline;
+  text-underline-offset: 4px;
+  background-color: transparent;
+}
+
+.btn-sm {
+  height: 2.25rem;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+  border-radius: var(--radius);
+}
+
+.btn-lg {
+  height: 2.75rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  border-radius: var(--radius);
+}
+
+.btn-icon {
+  height: 2.5rem;
+  width: 2.5rem;
+  padding: 0;
+}
+
+/* Form Styles */
+.input {
+  display: flex;
+  height: 2.5rem;
+  width: 100%;
+  border-radius: var(--radius);
+  border: 1px solid hsl(var(--input));
+  background-color: transparent;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+  font-size: 0.875rem;
+}
+
+.input:focus {
+  outline: none;
+  ring: 2px solid hsl(var(--ring));
+  ring-offset: 2px;
+}
+
+.textarea {
+  display: flex;
+  min-height: 80px;
+  width: 100%;
+  border-radius: var(--radius);
+  border: 1px solid hsl(var(--input));
+  background-color: transparent;
+  padding: 0.75rem;
+  font-size: 0.875rem;
+  resize: vertical;
+}
+
+.textarea:focus {
+  outline: none;
+  ring: 2px solid hsl(var(--ring));
+  ring-offset: 2px;
+}
+
+/* Animation Classes */
+@keyframes accordion-down {
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+  }
+}
+
+@keyframes accordion-up {
+  from {
+    height: var(--radix-accordion-content-height);
+  }
+  to {
+    height: 0;
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-accordion-down {
+  animation: accordion-down 0.2s ease-out;
+}
+
+.animate-accordion-up {
+  animation: accordion-up 0.2s ease-out;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-pulse-slow {
+  animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+/* Utility Classes */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.flex {
+  display: flex;
+}
+
+.flex-col {
+  flex-direction: column;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.gap-1 {
+  gap: 0.25rem;
+}
+
+.gap-2 {
+  gap: 0.5rem;
+}
+
+.gap-4 {
+  gap: 1rem;
+}
+
+.text-sm {
+  font-size: 0.875rem;
+}
+
+.text-lg {
+  font-size: 1.125rem;
+}
+
+.text-xl {
+  font-size: 1.25rem;
+}
+
+.text-2xl {
+  font-size: 1.5rem;
+}
+
+.font-medium {
+  font-weight: 500;
+}
+
+.font-semibold {
+  font-weight: 600;
+}
+
+.font-bold {
+  font-weight: 700;
+}
+
+/* Grid Layout Styles (for Angular Gridster) */
+.grid-item {
+  transition: all 200ms;
+  position: absolute;
+  z-index: 1;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+.grid-item.resizing,
+.grid-item.moving {
+  z-index: 2;
+  opacity: 0.9;
+}
+
+.grid-item .grid-item-content {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Additional styles for gridster */
+gridster {
+  background-color: transparent;
+}
+
+gridster-item {
+  background-color: transparent;
+  border-radius: var(--radius);
+  transition: transform 0.2s ease;
+}
+
+/* Style the resize handles */
+gridster-item .gridster-item-resizable-handler.handle-s,
+gridster-item .gridster-item-resizable-handler.handle-e,
+gridster-item .gridster-item-resizable-handler.handle-n,
+gridster-item .gridster-item-resizable-handler.handle-w,
+gridster-item .gridster-item-resizable-handler.handle-se,
+gridster-item .gridster-item-resizable-handler.handle-ne,
+gridster-item .gridster-item-resizable-handler.handle-sw,
+gridster-item .gridster-item-resizable-handler.handle-nw {
+  background-color: rgba(59, 130, 246, 0.5);
+  border-radius: 4px;
+}
+
+/* Make the corner handles larger */
+gridster-item .gridster-item-resizable-handler.handle-se,
+gridster-item .gridster-item-resizable-handler.handle-ne,
+gridster-item .gridster-item-resizable-handler.handle-sw,
+gridster-item .gridster-item-resizable-handler.handle-nw {
+  width: 12px;
+  height: 12px;
+}
+
+/* Style the grid lines in edit mode */
+gridster.display-grid .gridster-column,
+gridster.display-grid .gridster-row {
+  border: 1px dashed rgba(59, 130, 246, 0.3);
+}
+
+/* Style the grid when dragging */
+gridster.gridster-dragging {
+  cursor: move;
+}
+
+/* Style the grid when resizing */
+gridster.gridster-resizing {
+  cursor: se-resize;
+}
+
+/* Add some animation to the grid items */
+gridster-item {
+  transition: all 200ms ease;
+}
+
+/* Apply some base styles to the body */
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans",
+    "Helvetica Neue", sans-serif;
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+}
+
+/* Add a container class */
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 1rem;
+}
+
+/* Fix for gridster */
+gridster {
+  background: transparent !important;
+  min-height: 100% !important;
+}
+
+gridster-item {
+  background: transparent !important;
+  border-radius: var(--radius) !important;
+}
+
+/* Fix for gridster resize handles */
+.gridster-item-resizable-handler {
+  background-color: rgba(59, 130, 246, 0.5) !important;
+  border-radius: 4px !important;
+  z-index: 3 !important;
+}
+
+/* Fix for gridster grid lines */
+gridster.display-grid .gridster-column,
+gridster.display-grid .gridster-row {
+  border: 1px dashed rgba(59, 130, 246, 0.3) !important;
+}
+
+/* Debug styles */
+.debug-border {
+  border: 2px solid red !important;
+}
+
+/* Ensure gridster container has a minimum height */
+gridster {
+  min-height: 500px !important;
+}

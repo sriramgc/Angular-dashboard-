@@ -1,6 +1,7 @@
-<div class="space-y-4">
-  <div class="flex justify-between items-center">
-    <div class="flex gap-2">
+<div class="dashboard">
+  <div class="dashboard-header">
+    <h1 class="dashboard-title">Your Personalized Dashboard</h1>
+    <div class="dashboard-controls">
       <button class="btn btn-outline btn-sm flex items-center gap-2" (click)="dashboardService.toggleEditMode()">
         <ng-container *ngIf="editMode">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-save">
@@ -17,86 +18,54 @@
         </ng-container>
       </button>
 
-      <button *ngIf="editMode" class="btn btn-outline btn-sm flex items-center gap-2" (click)="dashboardService.addCard()">
+      <button *ngIf="editMode" class="btn btn-primary btn-sm flex items-center gap-2" (click)="dashboardService.addCard()">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus-circle">
           <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/>
         </svg>
         Add Card
       </button>
-    </div>
-
-    <div *ngIf="editMode" class="text-sm text-muted-foreground">
-      Drag cards between rows or resize by dragging card borders
+      
+      <button *ngIf="editMode" class="btn btn-secondary btn-sm flex items-center gap-2" (click)="dashboardService.resetToDefaultCards()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-refresh-cw">
+          <path d="M21 2v6h-6"></path><path d="M3 12a9 9 0 0 1 15-6.7L21 8"></path>
+          <path d="M3 22v-6h6"></path><path d="M21 12a9 9 0 0 1-15 6.7L3 16"></path>
+        </svg>
+        Reset Layout
+      </button>
     </div>
   </div>
 
-  <div #dashboardContainer class="space-y-4">
-    <div *ngFor="let row of rows" 
-         class="grid grid-cols-12 gap-4 min-h-[100px]"
-         [ngClass]="{'bg-primary/5 ring-2 ring-primary/20 rounded-lg': dragOverRow === row.rowId}"
-         (dragover)="onDragOver($event, row.rowId)"
-         (drop)="onDrop($event, row.rowId)">
-      
-      <div *ngFor="let card of row.cards"
-           [ngStyle]="getCardStyle(card)"
-           [attr.draggable]="editMode"
-           (dragstart)="onDragStart($event, card.id)"
-           (dragend)="onDragEnd()"
-           [ngClass]="{
-             'transition-all duration-200 hover:ring-2 hover:ring-primary/30 cursor-move': editMode,
-             'opacity-50': draggedCard === card.id
-           }"
-           class="h-full">
-        
-        <app-dashboard-card
-          [title]="card.title"
-          [content]="card.content"
-          [color]="card.color"
-          [isEditing]="editMode"
-          [size]="card.gridColumn"
-          [height]="card.height"
-          [rowId]="card.rowId"
-          [containerWidth]="containerWidth"
-          [canIncrease]="canIncreaseCardSize(card)"
-          [canDecrease]="card.gridColumn > 1"
-          (increaseSize)="dashboardService.resizeCard(card.id, true)"
-          (decreaseSize)="dashboardService.resizeCard(card.id, false)"
-          (remove)="dashboardService.removeCard(card.id)"
-          (resize)="onCardResize(card.id, $event)">
-        </app-dashboard-card>
-      </div>
-    </div>
-
-    <!-- Empty row for dropping cards -->
-    <div *ngIf="editMode"
-         class="min-h-[100px] border-2 border-dashed border-muted rounded-lg p-4 flex items-center justify-center"
-         [ngClass]="{'bg-primary/5 border-primary/40': dragOverRow === createNewRow()}"
-         (dragover)="onDragOver($event, createNewRow())"
-         (drop)="onDrop($event, createNewRow())">
-      <div class="text-center text-muted-foreground">
-        {{ dragOverRow === createNewRow() ? 'Drop to create a new row' : 'Drag cards here to create a new row' }}
-      </div>
-    </div>
-
-    <!-- Row selection for moving cards (alternative to drag and drop) -->
-    <div *ngIf="editMode && rows.length > 0" class="mt-8 p-4 border rounded-lg bg-muted/20">
-      <h3 class="font-medium mb-4">Move Cards Between Rows</h3>
-      <div class="space-y-4">
-        <div *ngFor="let card of cards" class="flex items-center gap-4">
-          <div class="font-medium w-1/4 truncate">{{ card.title }}</div>
-          <div class="flex-1">
-            <select 
-              class="w-full p-2 rounded-md border"
-              [ngModel]="card.rowId"
-              (ngModelChange)="dashboardService.moveCard(card.id, $event)">
-              <option *ngFor="let row of rows" [value]="row.rowId">
-                Row {{ row.rowId }}
-              </option>
-              <option [value]="createNewRow()">New Row</option>
-            </select>
-          </div>
+  <div class="gridster-container" [ngClass]="editMode ? 'edit-mode' : ''">
+    <gridster [options]="options" class="dashboard-grid">
+      <gridster-item [item]="card" *ngFor="let card of cards" (itemChange)="onItemChange(card)" class="grid-item">
+        <div class="grid-item-content">
+          <app-dashboard-card
+            [title]="card.title"
+            [content]="card.content"
+            [color]="card.color"
+            [isEditing]="editMode"
+            [size]="card.cols"
+            [cardType]="card.cardType || 'default'"
+            (remove)="removeItem(card)">
+          </app-dashboard-card>
         </div>
-      </div>
+      </gridster-item>
+    </gridster>
+  </div>
+
+  <!-- Instructions for edit mode -->
+  <div *ngIf="editMode" class="card mt-4">
+    <div class="card-header">
+      <h3 class="card-title text-lg">Dashboard Edit Mode</h3>
+    </div>
+    <div class="card-content">
+      <ul class="list-disc pl-5 space-y-1 text-sm">
+        <li>Drag cards to reposition them on the grid</li>
+        <li>Resize cards by dragging their borders</li>
+        <li>Click "Save Layout" when you're done</li>
+        <li>Click "Add Card" to add a new card to the dashboard</li>
+        <li>Click "Reset Layout" to restore the default layout</li>
+      </ul>
     </div>
   </div>
 </div>

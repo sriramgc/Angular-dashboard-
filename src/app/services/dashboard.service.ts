@@ -1,81 +1,190 @@
 import { Injectable } from "@angular/core"
 import { BehaviorSubject } from "rxjs"
-import type { DashboardCardData } from "../models/dashboard.model"
-
-interface DashboardRow {
-  rowId: number
-  cards: DashboardCardData[]
-}
+import { CompactType, DisplayGrid, type GridsterConfig, GridType } from "angular-gridster2"
+import type { DashboardCardData, GridsterCard, DashboardRow } from "../models/dashboard.model"
 
 @Injectable({
   providedIn: "root",
 })
 export class DashboardService {
   // Default cards with grid positioning
-  private defaultCards: DashboardCardData[] = [
+  private defaultCards: GridsterCard[] = [
     {
       id: "card-1",
       title: "Analytics",
       content: "Your analytics overview",
       color: "bg-blue-50 dark:bg-blue-950",
-      gridColumn: 6, // Half of the 12-column grid
-      rowId: 1,
-      height: 200, // Default height in pixels
+      x: 0, // gridster x coordinate
+      y: 0, // gridster y coordinate
+      cols: 6, // gridster column span
+      rows: 2, // gridster row span
+      cardType: "stat",
+      gridColumn: 6, // Legacy property
+      rowId: 1, // Legacy property
     },
     {
       id: "card-2",
       title: "Recent Activity",
       content: "Your recent activities",
       color: "bg-green-50 dark:bg-green-950",
+      x: 6,
+      y: 0,
+      cols: 6,
+      rows: 2,
+      cardType: "chart",
       gridColumn: 6,
       rowId: 1,
-      height: 200,
     },
     {
       id: "card-3",
       title: "Tasks",
       content: "Your pending tasks",
       color: "bg-purple-50 dark:bg-purple-950",
+      x: 0,
+      y: 2,
+      cols: 4,
+      rows: 3,
+      cardType: "todo",
       gridColumn: 4,
       rowId: 2,
-      height: 200,
     },
     {
       id: "card-4",
       title: "Messages",
       content: "Your recent messages",
       color: "bg-amber-50 dark:bg-amber-950",
+      x: 4,
+      y: 2,
+      cols: 4,
+      rows: 3,
+      cardType: "default",
       gridColumn: 4,
       rowId: 2,
-      height: 200,
     },
     {
       id: "card-5",
       title: "Calendar",
       content: "Upcoming events",
       color: "bg-rose-50 dark:bg-rose-950",
+      x: 8,
+      y: 2,
+      cols: 4,
+      rows: 3,
+      cardType: "default",
       gridColumn: 4,
       rowId: 2,
-      height: 200,
     },
     {
       id: "card-6",
       title: "Notes",
       content: "Your saved notes",
       color: "bg-cyan-50 dark:bg-cyan-950",
-      gridColumn: 12, // Full width
+      x: 0,
+      y: 5,
+      cols: 12,
+      rows: 3,
+      cardType: "notes",
+      gridColumn: 12,
       rowId: 3,
-      height: 200,
     },
   ]
 
-  private cardsSubject = new BehaviorSubject<DashboardCardData[]>([])
+  private cardsSubject = new BehaviorSubject<GridsterCard[]>([])
   private nextIdSubject = new BehaviorSubject<number>(7)
   private editModeSubject = new BehaviorSubject<boolean>(false)
 
   cards$ = this.cardsSubject.asObservable()
   nextId$ = this.nextIdSubject.asObservable()
   editMode$ = this.editModeSubject.asObservable()
+
+  // Gridster configuration
+  private _gridsterOptions: GridsterConfig = {
+    gridType: GridType.Fixed,
+    compactType: CompactType.None,
+    margin: 10,
+    outerMargin: true,
+    outerMarginTop: null,
+    outerMarginRight: null,
+    outerMarginBottom: null,
+    outerMarginLeft: null,
+    useTransformPositioning: true,
+    mobileBreakpoint: 640,
+    minCols: 12,
+    maxCols: 12,
+    minRows: 1,
+    maxRows: 100,
+    maxItemCols: 12,
+    minItemCols: 1,
+    maxItemRows: 100,
+    minItemRows: 1,
+    maxItemArea: 2500,
+    minItemArea: 1,
+    defaultItemCols: 4,
+    defaultItemRows: 2,
+    fixedColWidth: 80,
+    fixedRowHeight: 80,
+    keepFixedHeightInMobile: false,
+    keepFixedWidthInMobile: false,
+    scrollSensitivity: 10,
+    scrollSpeed: 20,
+    enableEmptyCellClick: false,
+    enableEmptyCellContextMenu: false,
+    enableEmptyCellDrop: false,
+    enableEmptyCellDrag: false,
+    enableOccupiedCellDrop: false,
+    emptyCellDragMaxCols: 50,
+    emptyCellDragMaxRows: 50,
+    ignoreMarginInRow: false,
+    draggable: {
+      enabled: true,
+      ignoreContentClass: "gridster-item-content",
+      ignoreContent: false,
+      dragHandleClass: "drag-handle",
+      stop: undefined,
+      start: undefined,
+      dropOverItems: false,
+      dropOverItemsCallback: undefined,
+    },
+    resizable: {
+      enabled: true,
+      handles: {
+        s: true,
+        e: true,
+        n: true,
+        w: true,
+        se: true,
+        ne: true,
+        sw: true,
+        nw: true,
+      },
+      stop: undefined,
+      start: undefined,
+    },
+    swap: false,
+    pushItems: true,
+    disablePushOnDrag: false,
+    disablePushOnResize: false,
+    pushDirections: { north: true, east: true, south: true, west: true },
+    pushResizeItems: false,
+    displayGrid: DisplayGrid.Always,
+    disableWindowResize: false,
+    disableWarnings: false,
+    scrollToNewItems: false,
+    itemChangeCallback: undefined,
+    itemResizeCallback: undefined,
+    itemInitCallback: undefined,
+    api: {
+      resize: undefined,
+      optionsChanged: undefined,
+      getNextPossiblePosition: undefined,
+      getFirstPossiblePosition: undefined,
+      getLastPossiblePosition: undefined,
+    },
+  }
+
+  get gridsterOptions(): GridsterConfig {
+    return this._gridsterOptions
+  }
 
   constructor() {
     this.loadSavedLayout()
@@ -86,11 +195,23 @@ export class DashboardService {
     if (savedLayout) {
       try {
         const parsed = JSON.parse(savedLayout)
-        this.cardsSubject.next(parsed)
+
+        // Convert legacy format to gridster format if needed
+        let gridsterCards: GridsterCard[]
+
+        if (parsed.length > 0 && parsed[0].x !== undefined) {
+          // Already in gridster format
+          gridsterCards = parsed
+        } else {
+          // Convert from legacy format
+          gridsterCards = this.convertLegacyToGridster(parsed)
+        }
+
+        this.cardsSubject.next(gridsterCards)
 
         // Find the highest ID to set nextId correctly
         const highestId = Math.max(
-          ...parsed.map((card: DashboardCardData) => Number.parseInt(card.id.replace("card-", ""), 10) || 0),
+          ...gridsterCards.map((card) => Number.parseInt(card.id.replace("card-", ""), 10) || 0),
         )
         this.nextIdSubject.next(highestId + 1)
       } catch (e) {
@@ -102,13 +223,84 @@ export class DashboardService {
     }
   }
 
+  // Reset to default cards
+  resetToDefaultCards(): void {
+    this.cardsSubject.next(this.defaultCards)
+    this.nextIdSubject.next(7)
+    localStorage.removeItem("dashboardLayout")
+  }
+
+  // Convert legacy card format to gridster format
+  private convertLegacyToGridster(legacyCards: DashboardCardData[]): GridsterCard[] {
+    const rowMap = new Map<number, { y: number; cards: DashboardCardData[] }>()
+
+    // Group cards by row
+    legacyCards.forEach((card) => {
+      if (!rowMap.has(card.rowId)) {
+        rowMap.set(card.rowId, { y: 0, cards: [] })
+      }
+      rowMap.get(card.rowId)?.cards.push(card)
+    })
+
+    // Sort rows by rowId
+    const sortedRows = Array.from(rowMap.entries()).sort(([a], [b]) => a - b)
+
+    // Assign y coordinates to rows
+    let currentY = 0
+    sortedRows.forEach(([_, rowData]) => {
+      rowData.y = currentY
+      // Assuming each row is 2 units high
+      currentY += 2
+    })
+
+    // Convert each card
+    const gridsterCards: GridsterCard[] = []
+    sortedRows.forEach(([rowId, rowData]) => {
+      let currentX = 0
+      rowData.cards.forEach((card) => {
+        gridsterCards.push({
+          id: card.id,
+          title: card.title,
+          content: card.content,
+          color: card.color,
+          x: currentX,
+          y: rowData.y,
+          cols: card.gridColumn,
+          rows: 2, // Default height
+          cardType: "default", // Default card type
+          gridColumn: card.gridColumn,
+          rowId: card.rowId,
+        })
+        currentX += card.gridColumn
+      })
+    })
+
+    return gridsterCards
+  }
+
   saveLayout(): void {
     localStorage.setItem("dashboardLayout", JSON.stringify(this.cardsSubject.value))
   }
 
   toggleEditMode(): void {
-    this.editModeSubject.next(!this.editModeSubject.value)
-    if (!this.editModeSubject.value) {
+    const newEditMode = !this.editModeSubject.value
+    this.editModeSubject.next(newEditMode)
+
+    // Update gridster options based on edit mode
+    this._gridsterOptions = {
+      ...this._gridsterOptions,
+      draggable: {
+        ...this._gridsterOptions.draggable,
+        enabled: newEditMode,
+      },
+      resizable: {
+        ...this._gridsterOptions.resizable,
+        enabled: newEditMode,
+      },
+      displayGrid: newEditMode ? DisplayGrid.Always : DisplayGrid.None,
+    }
+
+    if (!newEditMode) {
       this.saveLayout()
     }
   }
@@ -117,18 +309,34 @@ export class DashboardService {
     const cards = this.cardsSubject.value
     const nextId = this.nextIdSubject.value
 
-    // Find the highest rowId
-    const highestRowId = Math.max(...cards.map((card) => card.rowId), 0)
+    // Find the highest y coordinate
+    const highestY = Math.max(...cards.map((card) => card.y + card.rows), 0)
+
+    // Card types to cycle through
+    const cardTypes: Array<"default" | "stat" | "chart" | "todo" | "notes"> = [
+      "default",
+      "stat",
+      "chart",
+      "todo",
+      "notes",
+    ]
+
+    // Pick a random card type
+    const randomCardType = cardTypes[nextId % cardTypes.length]
 
     // Create a new card
-    const newCard: DashboardCardData = {
+    const newCard: GridsterCard = {
       id: `card-${nextId}`,
-      title: `New Card ${nextId}`,
+      title: `New ${randomCardType.charAt(0).toUpperCase() + randomCardType.slice(1)} Card`,
       content: "Click to edit this card",
       color: "bg-slate-50 dark:bg-slate-950",
-      gridColumn: 4, // Default to 1/3 of the grid
-      rowId: highestRowId + 1, // Add to a new row
-      height: 200, // Default height
+      x: 0,
+      y: highestY,
+      cols: 4,
+      rows: randomCardType === "notes" || randomCardType === "todo" ? 3 : 2, // Notes and todo cards are taller
+      cardType: randomCardType,
+      gridColumn: 4, // Legacy property
+      rowId: highestY / 2 + 1, // Legacy property
     }
 
     this.cardsSubject.next([...cards, newCard])
@@ -142,127 +350,30 @@ export class DashboardService {
     this.saveLayout()
   }
 
-  moveCard(cardId: string, targetRowId: number): void {
-    const cards = [...this.cardsSubject.value]
-    const cardIndex = cards.findIndex((card) => card.id === cardId)
-
-    if (cardIndex === -1) return
-
-    const card = { ...cards[cardIndex] }
-    const sourceRowId = card.rowId
-
-    // Don't do anything if moving to the same row
-    if (sourceRowId === targetRowId) return
-
-    // Remove the card from its original position
-    cards.splice(cardIndex, 1)
-
-    // Update the card's rowId
-    card.rowId = targetRowId
-
-    // Get all cards in the destination row
-    const cardsInDestRow = cards.filter((c) => c.rowId === targetRowId)
-
-    // Calculate total columns used in the destination row
-    const columnsUsed = cardsInDestRow.reduce((sum, c) => sum + c.gridColumn, 0)
-
-    // Adjust the card's size if necessary
-    const remainingColumns = 12 - columnsUsed
-    if (remainingColumns < card.gridColumn) {
-      card.gridColumn = Math.max(1, remainingColumns)
-    }
-
-    // If there's not enough space, redistribute columns
-    if (remainingColumns <= 0) {
-      // Calculate how many columns each card should have
-      const totalCards = cardsInDestRow.length + 1 // +1 for the moved card
-      const columnsPerCard = Math.floor(12 / totalCards)
-      const extraColumns = 12 % totalCards
-
-      // Redistribute columns
-      cards.forEach((c) => {
-        if (c.rowId === targetRowId) {
-          c.gridColumn = columnsPerCard
-        }
-      })
-
-      // Give the moved card the extra columns if any
-      card.gridColumn = columnsPerCard + extraColumns
-    }
-
-    // Add the card to the end of the array
-    cards.push(card)
+  updateCard(updatedCard: GridsterCard): void {
+    const cards = this.cardsSubject.value.map((card) => (card.id === updatedCard.id ? updatedCard : card))
     this.cardsSubject.next(cards)
     this.saveLayout()
   }
 
-  resizeCard(cardId: string, increase: boolean): void {
-    const cards = this.cardsSubject.value.map((card) => {
-      if (card.id === cardId) {
-        // Find all cards in the same row
-        const cardsInSameRow = this.cardsSubject.value.filter((c) => c.rowId === card.rowId && c.id !== cardId)
-        const totalOtherColumns = cardsInSameRow.reduce((sum, c) => sum + c.gridColumn, 0)
-
-        // Calculate available space
-        const availableSpace = 12 - totalOtherColumns
-
-        // Calculate new size
-        let newSize = increase ? card.gridColumn + 1 : card.gridColumn - 1
-
-        // Ensure size is within bounds
-        newSize = Math.max(1, Math.min(newSize, availableSpace))
-
-        return { ...card, gridColumn: newSize }
-      }
-      return card
-    })
-
-    this.cardsSubject.next(cards)
-    this.saveLayout()
-  }
-
-  // Enhanced method to handle proportional drag-resize
-  resizeCardByDrag(cardId: string, dimensions: { width: number; height: number }): void {
-    const cards = this.cardsSubject.value.map((card) => {
-      if (card.id === cardId) {
-        // Find all cards in the same row
-        const cardsInSameRow = this.cardsSubject.value.filter((c) => c.rowId === card.rowId && c.id !== cardId)
-        const totalOtherColumns = cardsInSameRow.reduce((sum, c) => sum + c.gridColumn, 0)
-
-        // Calculate available space
-        const availableSpace = 12 - totalOtherColumns
-
-        // Ensure width is within bounds
-        const newWidth = Math.max(1, Math.min(dimensions.width, availableSpace))
-
-        return {
-          ...card,
-          gridColumn: newWidth,
-          height: dimensions.height,
-        }
-      }
-      return card
-    })
-
-    this.cardsSubject.next(cards)
-    // We'll save when edit mode is toggled off to avoid performance issues
-  }
-
-  createNewRow(): number {
-    // Find the highest rowId
-    const highestRowId = Math.max(...this.cardsSubject.value.map((card) => card.rowId), 0)
-    return highestRowId + 1
-  }
-
+  // Legacy methods for backward compatibility
   getRowsWithCards(): DashboardRow[] {
     const rows: { [key: number]: DashboardCardData[] } = {}
 
     // Group cards by rowId
     this.cardsSubject.value.forEach((card) => {
-      if (!rows[card.rowId]) {
-        rows[card.rowId] = []
+      const rowId = card["rowId"] || Math.floor(card.y / 2) + 1
+      if (!rows[rowId]) {
+        rows[rowId] = []
       }
-      rows[card.rowId].push(card)
+      rows[rowId].push({
+        id: card.id,
+        title: card.title,
+        content: card.content,
+        color: card.color,
+        gridColumn: card.cols,
+        rowId: rowId,
+      })
     })
 
     // Sort rows by rowId
@@ -272,5 +383,11 @@ export class DashboardService {
         rowId: Number.parseInt(rowId),
         cards: rowCards,
       }))
+  }
+
+  createNewRow(): number {
+    // Find the highest rowId
+    const highestRowId = Math.max(...this.cardsSubject.value.map((card) => card["rowId"] || Math.floor(card.y / 2) + 1), 0)
+    return highestRowId + 1
   }
 }

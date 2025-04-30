@@ -1,0 +1,64 @@
+{
+  "hash": "f453dab1",
+  "configHash": "2f52486c",
+  "lockfileHash": "8a84b7f8",
+  "browserHash": "f8317041",
+  "optimized": {
+    "@angular/common": {
+      "src": "../../../../../../node_modules/@angular/common/fesm2022/common.mjs",
+      "file": "@angular_common.js",
+      "fileHash": "df2c2906",
+      "needsInterop": false
+    },
+    "@angular/core": {
+      "src": "../../../../../../node_modules/@angular/core/fesm2022/core.mjs",
+      "file": "@angular_core.js",
+      "fileHash": "f8fd5276",
+      "needsInterop": false
+    },
+    "@angular/forms": {
+      "src": "../../../../../../node_modules/@angular/forms/fesm2022/forms.mjs",
+      "file": "@angular_forms.js",
+      "fileHash": "9713a23b",
+      "needsInterop": false
+    },
+    "@angular/platform-browser": {
+      "src": "../../../../../../node_modules/@angular/platform-browser/fesm2022/platform-browser.mjs",
+      "file": "@angular_platform-browser.js",
+      "fileHash": "e8b647da",
+      "needsInterop": false
+    },
+    "@angular/platform-browser/animations": {
+      "src": "../../../../../../node_modules/@angular/platform-browser/fesm2022/animations.mjs",
+      "file": "@angular_platform-browser_animations.js",
+      "fileHash": "6e2c7da1",
+      "needsInterop": false
+    },
+    "angular-gridster2": {
+      "src": "../../../../../../node_modules/angular-gridster2/fesm2022/angular-gridster2.mjs",
+      "file": "angular-gridster2.js",
+      "fileHash": "5f6a2847",
+      "needsInterop": false
+    },
+    "rxjs": {
+      "src": "../../../../../../node_modules/rxjs/dist/esm5/index.js",
+      "file": "rxjs.js",
+      "fileHash": "010a9634",
+      "needsInterop": false
+    }
+  },
+  "chunks": {
+    "chunk-FCRIOCYV": {
+      "file": "chunk-FCRIOCYV.js"
+    },
+    "chunk-VJE4L4UK": {
+      "file": "chunk-VJE4L4UK.js"
+    },
+    "chunk-5SLB7SFU": {
+      "file": "chunk-5SLB7SFU.js"
+    },
+    "chunk-S35MAB2V": {
+      "file": "chunk-S35MAB2V.js"
+    }
+  }
+}
